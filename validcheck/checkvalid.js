@@ -63,11 +63,44 @@ var _fnSubmitViaAjax = function(event){
 
 
 var _fnLogOutViaAjax = function(event){	
-
-      $("body").load("cf_login.cfm", function(){
-			document.title = "Home";
-		});
+    // console.log("logoutclicked");
+    //   $("body").load("cf_index.cfm", function(){
+	// 		document.title = "Home";
+	// 	});
 		
       
+    
+    
+    
+    
+    
+        $.ajax({
+            type        : 'POST', 
+            url         : "cf_logincheck.cfc?method=doLogout", 
+            success: function (response) {
+                
+
+                console.log(response);
+            	if(response == "true"){
+            		
+            		$("body").load("cf_index.cfm", function(){
+                        document.title = "Home";
+                        
+            		});
+            	}   
+            	else{
+            	
+            		$("body").load("cf_homepage.cfm", function(){
+                        document.title = "welcome";
+                        
+            		});
+            	};       	
+            },
+            
+            error : function(response){
+            	console.log(JSON.stringify(response));
+            }
+        });
+    
         event.preventDefault();
 };

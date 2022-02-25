@@ -17,7 +17,7 @@
 		                            <h3 class="text-center text-info"><i class="fa fa-users" aria-hidden="true"></i>&nbsp;Please Sign-in</h3>
 		                            <div class="form-group">
 		                                <label for="username" class="text-info">Employee ID:</label><br>
-		                                <input type="text" name="username" id="username" placeholder="Employee_id"  class="form-control">
+		                                <input type="text" name="username" id="username" placeholder="Employee_id"   class="form-control">
 		                            </div>
 		                            <div class="form-group">
 		                                <label for="password" class="text-info">Employee Name:</label><br>
