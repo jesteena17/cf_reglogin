@@ -5,8 +5,8 @@
         <meta http-equiv="X-UA-Compatible">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Document</title>
-        <link href="./css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
-        <link href="./css/all.min.css" rel="stylesheet"/>
+      
+        <cfinclude template="templates.cfm" >
     </head>
     <body>
         <cfset  request.dsn="mysqldsn"/>
@@ -26,42 +26,10 @@
         <cfquery name = "getalldepartments" datasource = "#request.dsn#" username = "#request.un#" password = "#request.pw#">
    select dep_id,dep_name from Departments;
 </cfquery>
-        <!-- <cfdump var = "#getalldepartments#"> -->
-        <cfset  employeeid=""/>
-        <cfset  employeename=""/>
-        <cfset  jobname=""/>
-        <cfset  managerid=""/>
-        <cfset  hiredate=""/>
-        <cfset  salary=""/>
-        <cfset  commission=""/>
-        <cfset  departmentid=""/>
-        <cfset  key="editid"/>
-        <cfset FiletoUpload=""/>
+ 
 
+     
 
-        <Cfset thisPath = expandPath('.') & '/myUploads/'>
-   <cfset f_dir = GetDirectoryFromPath(thisPath)>
-
-
-
-        <cfif IsDefined("url.tide")>
-            <cfset  editid="#Decrypt(URL.tide, " #key#")#"/>
-            <cfif IsNumeric(editid)>
-                <cfquery name = "getemployeebyid" datasource = "#request.dsn#" username = "#request.un#" password = "#request.pw#">
-                    select *  from employees where emp_id=<cfqueryparam value="#editid#"  cfsqltype="cf_sql_integer">      
-                </cfquery>
-                   <!--- <cfdump var = "#getemployeebyid#">  --->
-                <cfset  employeeid="#getemployeebyid.emp_id#"/>
-                <cfset  employeename="#getemployeebyid.emp_name#"/>
-                <cfset  jobname="#getemployeebyid.job_name#"/>
-                <cfset  managerid="#getemployeebyid.manager_id#"/>
-                <cfset  hiredate="#getemployeebyid.hire_date#"/>
-                <cfset  salary="#getemployeebyid.salary#"/>
-                <cfset  commission="#getemployeebyid.commission#"/>
-                <cfset  departmentid="#getemployeebyid.dep_id#"/>
-                <cfset  FiletoUpload="#getemployeebyid.profilepic#"/>
-            </cfif>
-        </cfif>
         <div class="container">
             <div class="row">
                 <div class="col-md-12">
@@ -70,20 +38,20 @@
                         <form method="POST" action="cf_crudactionpage.cfm" enctype="multipart/form-data">
                             <tr>
                                 <th>Employee Name</th>
-                                <td><input class="form-control" type="text" name="employeename" value="<cfoutput> #employeename# </cfoutput>" required/></td>
+                                <td><input class="form-control" type="text" name="employeename"  required/></td>
                             </tr>
                             <tr>
                                 <th>Job Name</th>
-                                <td><input type="text" class="form-control" name="jobname" value="<cfoutput> #jobname# </cfoutput>" required/></td>
+                                <td><input type="text" class="form-control" name="jobname" required/></td>
                             </tr>
                             <tr>
                                 <th>Manager id</th>
                                 <td>
-                                    <select class="form-select" name="managerid" value="<cfoutput> #managerid# </cfoutput>" required>
+                                    <select class="form-control" name="managerid"  required>
                                         <cfoutput>
                                             <option value="">--select manager--</option>
                                             <cfloop QUERY="getallmanagers">
-                                                <option value="#getallmanagers.manager_id#" <cfif getallmanagers.manager_id EQ managerid> selected="selected"</cfif>>#getallmanagers.manager#(#getallmanagers.manager_id#) -
+                                                <option value="#getallmanagers.manager_id#" >#getallmanagers.manager#(#getallmanagers.manager_id#) -
                                                          #getallmanagers.dep_name#(#getallmanagers.dep_id#)</option>
                                             </cfloop>
                                         </cfoutput>
@@ -92,24 +60,24 @@
                             </tr>
                             <tr>
                                 <th>Hire date</th>
-                                <td><input type="date" class="form-control" name="hiredate" value="<cfoutput>#LSDateFormat(hiredate,'yyyy-mm-dd')#</cfoutput>" required/></td>
+                                <td><input type="date" class="form-control" name="hiredate" required/></td>
                             </tr>
                             <tr>
                                 <th>Salary</th>
-                                <td><input type="text" class="form-control" name="salary" value="<cfoutput> #salary# </cfoutput>" required/></td>
+                                <td><input type="text" class="form-control" name="salary"  required/></td>
                             </tr>
                             <tr>
                                 <th>Commission</th>
-                                <td><input type="text" class="form-control" name="commission" value="<cfoutput> #commission EQ ''?0.00:commission# </cfoutput>" required/></td>
+                                <td><input type="text" class="form-control" name="commission" required/></td>
                             </tr>
                             <tr>
                                 <th>Department Id</th>
                                 <td>
-                                    <select class="form-select" name="departmentid" value="<cfoutput> #departmentid# </cfoutput>" required>
+                                    <select class="form-select" name="departmentid" required>
                                         <cfoutput>
                                             <option value="">--select department--</option>
                                             <cfloop QUERY="getalldepartments">
-                                                <option value="#getalldepartments.dep_id#" <cfif getalldepartments.dep_id EQ departmentid> selected="selected"  </cfif>>#getalldepartments.dep_name#(#getalldepartments.dep_id#)</option>
+                                                <option value="#getalldepartments.dep_id#" >#getalldepartments.dep_name#(#getalldepartments.dep_id#)</option>
                                             </cfloop>
                                         </cfoutput>
                                     </select>
@@ -119,85 +87,20 @@
                                 <th>Photo</th>
                                 <td><input type="file" name="FiletoUpload" size="45">
                                 
-                                    <cfif FiletoUpload NEQ "">  <td>
-                                        
-                                        <img src="./myUploads/<cfoutput>#FiletoUpload#</cfoutput>" width="100" height="100"/></td>
-                                    </cfif>
+                                  
                                 </td>
                             </tr>
                             <tr>
                                 <td class="pt-3" align="center" colspan="2">
                                     <input type="submit" name="registerbtn" value="SAVE" class="btn btn-success"/>
-                                    <cfif IsDefined("url.tide") and IsNumeric(editid)>
-                                        <input type="hidden" name="updatedata" value="<cfoutput>#editid#</cfoutput>"/>
-                                    </cfif>
+                                    
                                 </td>
                             </tr>
                         </form>
                     </table>
                 </div>
             </div>
-            <div class="row">
-                <div class="col-md-12">
-                    <cfquery name = "getemployees" datasource = "#request.dsn#" username = "#request.un#" password = "#request.pw#">
-                         select * from employees order by emp_id desc;
-                    </cfquery>
-                    <h1 class="text-center mt-5">Employee Details</h1>
-                    <div class="container">
-                        <div class="row">
-                            <div class="col-md-12">
-                                <table align="center" class="table table-bordered">
-                                    <thead>
-                                        <tr class="text-center">
-                                            <th>Emp#ID</th>
-                                            <th>NAME</th>
-                                            <th>PHOTO</th>
-                                            <th>JOB</th>
-                                            <th>MANAGERID</th>
-                                            <th>JOIN DATE</th>
-                                            <th>SALARY</th>
-                                            <th>COMMISSION</th>
-                                            <th>DEPARTMENT ID</th>
-
-                                            <th colspan="3">ACTION</th>
-                                        </tr>
-                                    </thead>
-                                    <cfloop QUERY="getemployees">
-                                        <cfoutput>
-                                            <tr>
-                                                <td>#getemployees.emp_id#</td>
-                                                <td>#getemployees.emp_name#</td>
-                                                <td><img src="./myUploads/#getemployees.profilepic#" width="100" height="100"/></td>
-                                                <td>#getemployees.job_name#</td>
-                                                <td>#getemployees.manager_id EQ ''? 'Top-Level Manager':getemployees.manager_id#</td>
-                                                <td>#getemployees.hire_date#</td>
-                                                <td>#getemployees.salary#</td>
-                                                <td>#getemployees.commission EQ ''?'0.00':getemployees.commission#</td>
-                                                <td>#getemployees.dep_id#</td>
-                                                <td>
-                                                    <cfset  key="editid"/>
-                                                    <a class="btn btn-warning" href="#cgi.script_name#?tide=#URLEncodedFormat(Encrypt(getemployees.emp_id, " #key#"))#">
-                                                        <i class="fa fa-edit"></i>
-                                                    </a>
-                                                </td>
-                                                <td>
-                                                    <cfset  key="eid"/>
-                                                    <a class="btn btn-danger" style="color:white" href="cf_cruddeleteemployee.cfm?die=#URLEncodedFormat(Encrypt(getemployees.emp_id, " #key#"))#">
-                                                        <i class="fa fa-trash"></i>
-                                                    </a>
-                                                </td>
-                                                <td>
-                                                    <a download class="btn btn-info" href="cf_getemployee_details.cfm?empids=#getemployees.emp_id#" style="color:white" href="">
-                                                        <i class="fa fa-file-pdf" aria-hidden="true"></i>
-                                                    </a>
-                                                </td>
-                                            </tr>
-                                        </cfoutput>
-                                    </cfloop>
-                                    <tbody></tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
+            
+  
                 </body>
             </html>
